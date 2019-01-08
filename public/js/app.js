@@ -26,10 +26,20 @@ class TimersDashboard extends React.Component {
         this.updateTimer(attrs);
     };
 
+    handleTrashClick = (timerId) => {
+        this.deleteTimer(timerId);
+    };
+
     createTimer = (timer) => {
         const t = helpers.newTimer(timer);
         this.setState({
             timers: this.state.timers.concat(t),
+        });
+    };
+
+    deleteTimer = (timerId) => {
+        this.setState({
+            timers: this.state.timers.filter(t=>t.id!==timerId),
         });
     };
 
@@ -55,6 +65,7 @@ class TimersDashboard extends React.Component {
                     <EditableTimerList 
                         timers={this.state.timers}
                         onFormSubmit = {this.handleEditFormSubmit}
+                        onTrashClick = {this.handleTrashClick}
                     />
                     <ToggleableTimerForm
                         onFormSubmit = {this.handleCreateFormSubmit}
@@ -116,6 +127,7 @@ class EditableTimerList extends React.Component{
                 elapsed  = {timer.elapsed}
                 runningSince = {timer.runningSince}
                 onFormSubmit = {this.props.onFormSubmit}
+                onTrashClick = {this.props.onTrashClick}
                 />
         ));
         return (
@@ -172,6 +184,7 @@ class EditableTimer extends React.Component{
                     elapsed={this.props.elapsed}
                     runningSince={this.props.runningSince}
                     onEditClick={this.handleEditClick}
+                    onTrashClick={this.props.onTrashClick}
                 />
             );
         }
@@ -179,6 +192,10 @@ class EditableTimer extends React.Component{
 }
 
 class Timer extends React.Component{
+    handleTrackClick = () => {
+        this.props.onTrashClick(this.props.id);
+    };
+
     render(){
         const elapsedString = helpers.renderElapsedString(this.props.elapsed);
         return(
@@ -202,7 +219,10 @@ class Timer extends React.Component{
                         >
                             <i className='edit icon' />
                         </span>
-                        <span className='right floated edit icon'>
+                        <span 
+                            className='right floated edit icon'
+                            onClick={this.handleTrackClick}
+                        >
                             <i className='trash icon' />
                         </span>
                     </div>
