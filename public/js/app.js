@@ -48,6 +48,21 @@ class TimersDashboard extends React.Component {
         });
     };
 
+    updateTimer = (attrs) => {
+        this.setState({
+            timers: this.state.timers.map((timer)=>{
+                if(timer.id === attrs.id){
+                    return Object.assign({}, timer, {
+                        title: attrs.title,
+                        project: attrs.project,
+                    });
+                } else {
+                    return timer;
+                }
+            }),
+        });
+    };
+
     startTimer = (timerId)  => {
         const now = Date.now();
 
@@ -62,6 +77,10 @@ class TimersDashboard extends React.Component {
                 }
             }),
         });
+
+        client.startTimer(
+            { id: timerId, start: now}  
+        );
     };
 
     stopTimer = (timerId) => {
@@ -80,21 +99,10 @@ class TimersDashboard extends React.Component {
                 }
             }),
         });
-    };
 
-    updateTimer = (attrs) => {
-        this.setState({
-            timers: this.state.timers.map((timer)=>{
-                if(timer.id === attrs.id){
-                    return Object.assign({}, timer, {
-                        title: attrs.title,
-                        project: attrs.project,
-                    });
-                } else {
-                    return timer;
-                }
-            }),
-        });
+        client.stopTimer(
+            {id: timerId, stop: now}
+        );
     };
 
     render(){
